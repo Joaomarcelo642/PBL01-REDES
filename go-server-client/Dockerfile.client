@@ -1,0 +1,10 @@
+FROM golang:1.18-alpine
+
+WORKDIR /app
+
+COPY client.go .
+
+RUN go mod init client
+RUN go build -o client client.go
+
+CMD ["./client"]

@@ -1,0 +1,12 @@
+FROM golang:1.18-alpine
+
+WORKDIR /app
+
+COPY server.go .
+
+RUN go mod init server
+RUN go build -o server server.go
+
+EXPOSE 8080 8081/udp
+
+CMD ["./server"]
