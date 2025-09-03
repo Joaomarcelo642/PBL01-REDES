@@ -1,17 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"net"
 	"os"
+	"strings"
 	"time"
 )
-
-/*const (
-	serverTcpAddr = "server:8080"
-	serverUdpAddr = "server:8081"
-)*/
 
 func main() {
 	if len(os.Args) < 3 {
@@ -21,21 +18,15 @@ func main() {
 	serverIP := os.Args[2]
 
 	serverTcpAddr := fmt.Sprintf("%s:8080", serverIP)
-    serverUdpAddr := fmt.Sprintf("%s:8081", serverIP)
+	serverUdpAddr := fmt.Sprintf("%s:8081", serverIP)
 
-
-	done := make(chan bool)
-	go startMatchmaking(playerName, serverTcpAddr, done)
 	go sendUdpData(playerName, serverUdpAddr)
-
-	<-done
+	handleServerConnection(playerName, serverTcpAddr)
 	fmt.Printf("%s: Encerrando cliente.\n", playerName)
 }
 
-func startMatchmaking(playerName string, serverTcpAddr string, done chan bool) {
-	defer func() { done <- true }()
-
-	log.Printf("%s: Conectando ao servidor TCP (%s) para pareamento...", playerName, serverTcpAddr)
+func handleServerConnection(playerName string, serverTcpAddr string) {
+	log.Printf("%s: Conectando ao servidor TCP (%s)...", playerName, serverTcpAddr)
 	conn, err := net.Dial("tcp", serverTcpAddr)
 	if err != nil {
 		log.Printf("%s: Não foi possível conectar ao servidor TCP: %v", playerName, err)
@@ -48,26 +39,50 @@ func startMatchmaking(playerName string, serverTcpAddr string, done chan bool) {
 		log.Printf("%s: Falha ao enviar nome para o servidor: %v", playerName, err)
 		return
 	}
+	fmt.Printf("%s: Conectado com sucesso!\n", playerName)
 
-	fmt.Printf("%s: Conectado. Aguardando por um pareamento...\n", playerName)
+	go listenServerMessages(conn, playerName)
 
-	buffer := make([]byte, 1024)
-	n, err := conn.Read(buffer)
-	if err != nil {
-		log.Printf("%s: Conexão com o servidor encerrada. Motivo: %v", playerName, err)
-		return
+	reader := bufio.NewReader(os.Stdin)
+	for {
+		fmt.Println("\nEscolha uma ação:")
+		fmt.Println("1. Procurar Partida (1v1)")
+		fmt.Println("2. Abrir Pacote de Cartas")
+		fmt.Println("3. Sair")
+		fmt.Print("> ")
+
+		input, _ := reader.ReadString('\n')
+		choice := strings.TrimSpace(input)
+
+		switch choice {
+		case "1":
+			fmt.Fprintf(conn, "FIND_MATCH\n")
+			fmt.Println("Procurando por uma partida... Aguarde a resposta do servidor.")
+			// Bloqueia a goroutine principal aqui. A goroutine listenServerMessages
+			// vai chamar os.Exit() quando a conexão for fechada pelo servidor.
+			select {}
+		case "2":
+			fmt.Fprintf(conn, "OPEN_PACK\n")
+			// Dá um tempo para a resposta do servidor ser impressa antes de mostrar o menu
+			time.Sleep(1 * time.Second)
+		case "3":
+			return
+		default:
+			fmt.Println("Opção inválida. Tente novamente.")
+		}
 	}
+}
 
-	response := string(buffer[:n])
-
-	switch response {
-	case "MATCH_FOUND":
-		fmt.Printf(" %s: Partida encontrada! Preparando para jogar...\n", playerName)
-		time.Sleep(5 * time.Second)
-	case "NO_MATCH_FOUND":
-		fmt.Printf(" %s: Não foi possível encontrar uma partida. Tente novamente mais tarde.\n", playerName)
-	default:
-		fmt.Printf("%s: Resposta inesperada do servidor: %s\n", playerName, response)
+func listenServerMessages(conn net.Conn, playerName string) {
+	reader := bufio.NewReader(conn)
+	for {
+		message, err := reader.ReadString('\n')
+		if err != nil {
+			log.Printf("%s: Conexão com o servidor perdida.", playerName)
+			os.Exit(0) // Encerra o cliente
+		}
+		// Limpa a linha atual e imprime a mensagem do servidor
+		fmt.Printf("\r[Servidor]: %s\n> ", strings.TrimSpace(message))
 	}
 }
 
@@ -77,7 +92,6 @@ func sendUdpData(playerName string, serverUdpAddr string) {
 		log.Printf("%s: Não foi possível resolver o endereço do servidor UDP: %v", playerName, err)
 		return
 	}
-
 	conn, err := net.DialUDP("udp", nil, udpAddr)
 	if err != nil {
 		log.Printf("%s: Não foi possível conectar ao servidor UDP: %v", playerName, err)
@@ -88,11 +102,9 @@ func sendUdpData(playerName string, serverUdpAddr string) {
 	for {
 		timestamp := time.Now().UnixNano()
 		message := fmt.Sprintf("%s:%d", playerName, timestamp)
-
 		_, err := conn.Write([]byte(message))
 		if err != nil {
 			log.Printf("%s: Erro ao enviar pacote UDP: %v", playerName, err)
-			return
 		}
 		time.Sleep(2 * time.Second)
 	}

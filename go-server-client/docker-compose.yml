@@ -20,6 +20,8 @@ services:
     command: ["./client", "Jogador1", "server"]
     networks:
       - app-network
+    stdin_open: true # Mantenha a entrada padrão aberta
+    tty: true
 
   player2:
     build:
@@ -30,116 +32,118 @@ services:
     command: ["./client", "Jogador2", "server"]
     networks:
       - app-network
+    stdin_open: true # Mantenha a entrada padrão aberta
+    tty: true
 
-  player3:
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    depends_on:
-      - server
-    command: ["./client", "Jogador3", "server"]
-    networks:
-      - app-network
+  # player3:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.client
+  #   depends_on:
+  #     - server
+  #   command: ["./client", "Jogador3", "server"]
+  #   networks:
+  #     - app-network
 
-  player4:
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    depends_on:
-      - server
-    command: ["./client", "Jogador4", "server"]
-    networks:
-      - app-network
+  # player4:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.client
+  #   depends_on:
+  #     - server
+  #   command: ["./client", "Jogador4", "server"]
+  #   networks:
+  #     - app-network
 
-  player5:
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    depends_on:
-      - server
-    command: ["./client", "Jogador5", "server"]
-    networks:
-      - app-network
+  # player5:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.client
+  #   depends_on:
+  #     - server
+  #   command: ["./client", "Jogador5", "server"]
+  #   networks:
+  #     - app-network
 
-  player6:
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    depends_on:
-      - server
-    command: ["./client", "Jogador6", "server"]
-    networks:
-      - app-network
+  # player6:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.client
+  #   depends_on:
+  #     - server
+  #   command: ["./client", "Jogador6", "server"]
+  #   networks:
+  #     - app-network
 
-  player7:
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    depends_on:
-      - server
-    command: ["./client", "Jogador7", "server"]
-    networks:
-      - app-network
+  # player7:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.client
+  #   depends_on:
+  #     - server
+  #   command: ["./client", "Jogador7", "server"]
+  #   networks:
+  #     - app-network
 
-  player8:
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    depends_on:
-      - server
-    command: ["./client", "Jogador8", "server"]
-    networks:
-      - app-network
+  # player8:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.client
+  #   depends_on:
+  #     - server
+  #   command: ["./client", "Jogador8", "server"]
+  #   networks:
+  #     - app-network
 
-  player9:
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    depends_on:
-      - server
-    command: ["./client", "Jogador9", "server"]
-    networks:
-      - app-network
+  # player9:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.client
+  #   depends_on:
+  #     - server
+  #   command: ["./client", "Jogador9", "server"]
+  #   networks:
+  #     - app-network
 
-  player10:
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    depends_on:
-      - server
-    command: ["./client", "Jogador10", "server"]
-    networks:
-      - app-network
+  # player10:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.client
+  #   depends_on:
+  #     - server
+  #   command: ["./client", "Jogador10", "server"]
+  #   networks:
+  #     - app-network
 
-  player11:
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    depends_on:
-      - server
-    command: ["./client", "Jogador11", "server"]
-    networks:
-      - app-network
+  # player11:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.client
+  #   depends_on:
+  #     - server
+  #   command: ["./client", "Jogador11", "server"]
+  #   networks:
+  #     - app-network
 
-  player12:
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    depends_on:
-      - server
-    command: ["./client", "Jogador12", "server"]
-    networks:
-      - app-network
+  # player12:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.client
+  #   depends_on:
+  #     - server
+  #   command: ["./client", "Jogador12", "server"]
+  #   networks:
+  #     - app-network
 
-  player13:
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    depends_on:
-      - server
-    command: ["./client", "Jogador13", "server"]
-    networks:
-      - app-network
+  # player13:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.client
+  #   depends_on:
+  #     - server
+  #   command: ["./client", "Jogador13", "server"]
+  #   networks:
+  #     - app-network
 
 networks:
   app-network:
