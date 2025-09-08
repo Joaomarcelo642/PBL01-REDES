@@ -20,7 +20,7 @@ services:
     command: ["./client", "Jogador1", "server"]
     networks:
       - app-network
-    stdin_open: true 
+    stdin_open: true # Mantenha a entrada padrão aberta
     tty: true
 
   player2:
@@ -32,7 +32,7 @@ services:
     command: ["./client", "Jogador2", "server"]
     networks:
       - app-network
-    stdin_open: true 
+    stdin_open: true # Mantenha a entrada padrão aberta
     tty: true
 
   # player3:

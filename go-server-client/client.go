@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -21,20 +22,75 @@ var isInGame bool
 const matchmakingTimeoutSeconds = 15
 
 func main() {
-	if len(os.Args) < 3 {
-		log.Fatal("Uso: ./client <nome_do_jogador> <ip_do_servidor>")
+	// Adiciona a flag -bot para o modo automatizado
+	botMode := flag.Bool("bot", false, "Executa o cliente em modo automatizado (bot).")
+	flag.Parse() // Processa as flags
+
+	// Verifica os argumentos restantes (nome e ip)
+	args := flag.Args()
+	if len(args) < 2 {
+		log.Fatal("Uso: ./client [-bot] <nome_do_jogador> <ip_do_servidor>")
 	}
-	playerName := os.Args[1]
-	serverIP := os.Args[2]
+	playerName := args[0]
+	serverIP := args[1]
 
 	serverTcpAddr := fmt.Sprintf("%s:8080", serverIP)
 	serverUdpAddr := fmt.Sprintf("%s:8081", serverIP)
 
 	go sendUdpData(playerName, serverUdpAddr)
-	handleServerConnection(playerName, serverTcpAddr)
-	fmt.Printf("%s: Encerrando cliente.\n", playerName)
+
+	// Se o modo bot estiver ativo, executa a lógica do bot. Senão, o modo interativo.
+	if *botMode {
+		runBot(playerName, serverTcpAddr)
+	} else {
+		handleServerConnection(playerName, serverTcpAddr)
+	}
+
+	// Removido o log de encerramento para não poluir a saída do bot
 }
 
+// NOVA FUNÇÃO: runBot contém a lógica para o cliente automatizado
+func runBot(playerName string, serverTcpAddr string) {
+	conn, err := net.Dial("tcp", serverTcpAddr)
+	if err != nil {
+		log.Printf("[Bot %s]: Não foi possível conectar ao servidor: %v", playerName, err)
+		return
+	}
+	defer conn.Close()
+
+	fmt.Fprintf(conn, "%s\n", playerName)
+	log.Printf("[Bot %s]: Conectado com sucesso! Procurando partida...", playerName)
+	fmt.Fprintf(conn, "FIND_MATCH\n")
+
+	reader := bufio.NewReader(conn)
+	for {
+		message, err := reader.ReadString('\n')
+		if err != nil {
+			if err != io.EOF {
+				log.Printf("[Bot %s]: Erro de conexão: %v", playerName, err)
+			}
+			break // Sai do loop se a conexão for fechada ou houver erro
+		}
+
+		message = strings.TrimSpace(message)
+		log.Printf("[Bot %s] Recebeu: %s", playerName, message)
+
+		if strings.HasPrefix(message, "MATCH_START|") {
+			log.Printf("[Bot %s]: Partida iniciada! Jogando a primeira carta.", playerName)
+			// O bot sempre joga a primeira carta (opção "1")
+			fmt.Fprintf(conn, "1\n")
+		} else if strings.HasPrefix(message, "RESULT|") {
+			log.Printf("[Bot %s]: Partida finalizada.", playerName)
+			break // Encerra o bot após o fim da partida
+		} else if message == "NO_MATCH_FOUND" {
+			log.Printf("[Bot %s]: Nenhum oponente encontrado. Encerrando.", playerName)
+			break
+		}
+	}
+	log.Printf("[Bot %s]: Desconectando.", playerName)
+}
+
+// Restante do código (modo interativo) permanece quase o mesmo
 func handleServerConnection(playerName string, serverTcpAddr string) {
 	var conn net.Conn
 	var err error
@@ -139,12 +195,12 @@ func listenServerMessages(conn net.Conn, playerName string, cancelGame context.C
 		} else if message == "MATCH_FOUND" {
 			fmt.Printf("\r[Servidor]: Partida encontrada! Iniciando...\n")
 			stateMutex.Lock()
-			isSearching = false 
+			isSearching = false
 			stateMutex.Unlock()
 		} else if message == "NO_MATCH_FOUND" {
 			fmt.Printf("\r[Servidor]: Nenhum oponente encontrado a tempo. Tente novamente.\n")
 			stateMutex.Lock()
-			isSearching = false 
+			isSearching = false
 			stateMutex.Unlock()
 		} else if strings.HasPrefix(message, "TIMER|") {
 			parts := strings.Split(message, "|")
@@ -235,8 +291,8 @@ func sendUdpData(playerName string, serverUdpAddr string) {
 
 	maxRetries := 5
 	for i := 0; i < maxRetries; i++ {
-		udpAddr, err := net.ResolveUDPAddr("udp", serverUdpAddr)
-		if err != nil {
+		udpAddr, errResolve := net.ResolveUDPAddr("udp", serverUdpAddr)
+		if errResolve != nil {
 			log.Printf("%s: Não foi possível resolver endereço UDP. Tentando de novo...", playerName)
 			time.Sleep(2 * time.Second)
 			continue
@@ -257,9 +313,9 @@ func sendUdpData(playerName string, serverUdpAddr string) {
 	for {
 		timestamp := time.Now().UnixNano()
 		message := fmt.Sprintf("%s:%d", playerName, timestamp)
-		_, err := conn.Write([]byte(message))
-		if err != nil {
-			log.Printf("%s: Erro ao enviar pacote UDP: %v", playerName, err)
+		_, errWrite := conn.Write([]byte(message))
+		if errWrite != nil {
+			log.Printf("%s: Erro ao enviar pacote UDP: %v", playerName, errWrite)
 		}
 		time.Sleep(2 * time.Second)
 	}
