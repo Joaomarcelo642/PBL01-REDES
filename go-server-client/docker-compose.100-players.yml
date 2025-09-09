@@ -1,0 +1,1317 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    ports:
+      - "8080:8080" # Porta TCP
+      - "8081:8081/udp" # Porta UDP
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  player1:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador1", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player2:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador2", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player3:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador3", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player4:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador4", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player5:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador5", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player6:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador6", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player7:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador7", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player8:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador8", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player9:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador9", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player10:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador10", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player11:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador11", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player12:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador12", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player13:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador13", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player14:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador14", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player15:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador15", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player16:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador16", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player17:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador17", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player18:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador18", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player19:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador19", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player20:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador20", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player21:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador21", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player22:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador22", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player23:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador23", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player24:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador24", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player25:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador25", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player26:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador26", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player27:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador27", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player28:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador28", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player29:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador29", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player30:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador30", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player31:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador31", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player32:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador32", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player33:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador33", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player34:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador34", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player35:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador35", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player36:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador36", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player37:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador37", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player38:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador38", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player39:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador39", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player40:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador40", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player41:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador41", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player42:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador42", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player43:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador43", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player44:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador44", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player45:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador45", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player46:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador46", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player47:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador47", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player48:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador48", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player49:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador49", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player50:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador50", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player51:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador51", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player52:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador52", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player53:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador53", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player54:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador54", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player55:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador55", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player56:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador56", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player57:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador57", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player58:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador58", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player59:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador59", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player60:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador60", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player61:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador61", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player62:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador62", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player63:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador63", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player64:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador64", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player65:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador65", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player66:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador66", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player67:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador67", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player68:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador68", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player69:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador69", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player70:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador70", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player71:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador71", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player72:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador72", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player73:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador73", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player74:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador74", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player75:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador75", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player76:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador76", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player77:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador77", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player78:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador78", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player79:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador79", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player80:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador80", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player81:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador81", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player82:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador82", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player83:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador83", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player84:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador84", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player85:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador85", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player86:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador86", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player87:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador87", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player88:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador88", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player89:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador89", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player90:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador90", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player91:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador91", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player92:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador92", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player93:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador93", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player94:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador94", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player95:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador95", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player96:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador96", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player97:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador97", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player98:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador98", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player99:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador99", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+  player100:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    command: ["./client", "-bot", "Jogador100", "server"]
+    networks:
+      - app-network
+    stdin_open: true 
+    tty: true
+    restart: on-failure
+
+networks:
+  app-network:
+    driver: bridge

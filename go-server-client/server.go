@@ -79,11 +79,11 @@ func initializeCardPacks() {
 	for _, card := range baseCards {
 		copies := 1
 		if card.Forca >= 1 && card.Forca <= 3 {
-			copies = 4
+			copies = 40
 		} else if card.Forca >= 4 && card.Forca <= 6 {
-			copies = 3
+			copies = 30
 		} else if card.Forca >= 7 && card.Forca <= 10 {
-			copies = 2
+			copies = 20
 		}
 
 		for i := 0; i < copies; i++ {
@@ -91,17 +91,17 @@ func initializeCardPacks() {
 		}
 	}
 
-	for len(fullCardStock) < 90 {
+	for len(fullCardStock) < 3000 {
 		fullCardStock = append(fullCardStock, baseCards[0])
 	}
-	fullCardStock = fullCardStock[:90]
+	fullCardStock = fullCardStock[:3000]
 
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(fullCardStock), func(i, j int) {
 		fullCardStock[i], fullCardStock[j] = fullCardStock[j], fullCardStock[i]
 	})
 
-	for i := 0; i < 30; i++ {
+	for i := 0; i < 300; i++ {
 		pack := fullCardStock[i*3 : (i+1)*3]
 		cardPacks = append(cardPacks, pack)
 	}
