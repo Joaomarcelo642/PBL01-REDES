@@ -79,11 +79,11 @@ func initializeCardPacks() {
 	for _, card := range baseCards {
 		copies := 1
 		if card.Forca >= 1 && card.Forca <= 3 {
-			copies = 4
+			copies = 400
 		} else if card.Forca >= 4 && card.Forca <= 6 {
-			copies = 3
+			copies = 300
 		} else if card.Forca >= 7 && card.Forca <= 10 {
-			copies = 2
+			copies = 200
 		}
 
 		for i := 0; i < copies; i++ {
@@ -91,17 +91,17 @@ func initializeCardPacks() {
 		}
 	}
 
-	for len(fullCardStock) < 90 {
+	for len(fullCardStock) < 9000 {
 		fullCardStock = append(fullCardStock, baseCards[0])
 	}
-	fullCardStock = fullCardStock[:90]
+	fullCardStock = fullCardStock[:9000]
 
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(fullCardStock), func(i, j int) {
 		fullCardStock[i], fullCardStock[j] = fullCardStock[j], fullCardStock[i]
 	})
 
-	for i := 0; i < 30; i++ {
+	for i := 0; i < 3000; i++ {
 		pack := fullCardStock[i*3 : (i+1)*3]
 		cardPacks = append(cardPacks, pack)
 	}
@@ -126,7 +126,6 @@ func startTcpServer() {
 	}
 }
 
-// --- Lógica Principal do Jogador ---
 func handlePlayerConnection(conn net.Conn) {
 	playerMutex.Lock()
 	player, playerExists := players[conn]
@@ -229,7 +228,6 @@ func viewDeck(player *Player) {
 	player.Conn.Write([]byte(response + "\n"))
 }
 
-// --- Lógica de Matchmaking e Jogo ---
 func matchmaker() {
 	var waitingPlayer *Player
 	var timer *time.Timer
@@ -369,35 +367,43 @@ func determineWinner(session *GameSession) {
 	p2Card := session.Player2Card
 
 	var resultP1, resultP2 string
+	var logMessage string // <-- Variável para a mensagem de log
 
 	if p1Card != nil && p2Card != nil {
 		if p1Card.Forca > p2Card.Forca {
 			resultP1 = fmt.Sprintf("RESULT|VITÓRIA|Sua carta %s (%d) venceu %s (%d) de %s.\n", p1Card.Name, p1Card.Forca, p2Card.Name, p2Card.Forca, session.Player2.Name)
 			resultP2 = fmt.Sprintf("RESULT|DERROTA|Sua carta %s (%d) perdeu para %s (%d) de %s.\n", p2Card.Name, p2Card.Forca, p1Card.Name, p1Card.Forca, session.Player1.Name)
+			logMessage = fmt.Sprintf("Resultado: %s venceu %s.", session.Player1.Name, session.Player2.Name)
 		} else if p2Card.Forca > p1Card.Forca {
 			resultP2 = fmt.Sprintf("RESULT|VITÓRIA|Sua carta %s (%d) venceu %s (%d) de %s.\n", p2Card.Name, p2Card.Forca, p1Card.Name, p1Card.Forca, session.Player1.Name)
 			resultP1 = fmt.Sprintf("RESULT|DERROTA|Sua carta %s (%d) perdeu para %s (%d) de %s.\n", p1Card.Name, p1Card.Forca, p2Card.Name, p2Card.Forca, session.Player2.Name)
+			logMessage = fmt.Sprintf("Resultado: %s venceu %s.", session.Player2.Name, session.Player1.Name)
 		} else {
 			result := fmt.Sprintf("RESULT|EMPATE|Empate! Ambas as cartas têm força %d.\n", p1Card.Forca)
 			resultP1, resultP2 = result, result
+			logMessage = fmt.Sprintf("Resultado: Empate entre %s e %s.", session.Player1.Name, session.Player2.Name)
 		}
 	} else if p1Card == nil && p2Card != nil {
 		resultP1 = "RESULT|DERROTA|Você não jogou a tempo e perdeu.\n"
 		resultP2 = fmt.Sprintf("RESULT|VITÓRIA|%s não jogou a tempo. Você venceu!\n", session.Player1.Name)
+		logMessage = fmt.Sprintf("Resultado: %s venceu %s por timeout.", session.Player2.Name, session.Player1.Name)
 	} else if p2Card == nil && p1Card != nil {
 		resultP2 = "RESULT|DERROTA|Você não jogou a tempo e perdeu.\n"
 		resultP1 = fmt.Sprintf("RESULT|VITÓRIA|%s não jogou a tempo. Você venceu!\n", session.Player2.Name)
+		logMessage = fmt.Sprintf("Resultado: %s venceu %s por timeout.", session.Player1.Name, session.Player2.Name)
 	} else {
 		result := "RESULT|EMPATE|Nenhum jogador jogou a tempo. Empate.\n"
 		resultP1, resultP2 = result, result
+		logMessage = fmt.Sprintf("Resultado: Empate por timeout duplo entre %s e %s.", session.Player1.Name, session.Player2.Name)
 	}
 
 	session.Player1.Conn.Write([]byte(resultP1))
 	session.Player2.Conn.Write([]byte(resultP2))
-	log.Printf("Partida entre %s e %s finalizada.", session.Player1.Name, session.Player2.Name)
+
+	// --- LINHA ADICIONADA ---
+	log.Printf("Partida entre %s e %s finalizada. %s", session.Player1.Name, session.Player2.Name, logMessage)
 }
 
-// --- Servidor UDP ---
 func startUdpServer() {
 	udpAddr, err := net.ResolveUDPAddr("udp", udpPort)
 	if err != nil {
@@ -411,7 +417,6 @@ func startUdpServer() {
 	log.Println("Servidor UDP de tempo real iniciado na porta", udpPort)
 	buffer := make([]byte, 1024)
 	for {
-		// CORREÇÃO: Substituímos 'addr' por '_' para ignorar o valor não utilizado.
 		n, _, err := conn.ReadFromUDP(buffer)
 		if err != nil {
 			log.Printf("Erro ao ler pacote UDP: %v", err)

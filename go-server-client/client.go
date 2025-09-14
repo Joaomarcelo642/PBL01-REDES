@@ -22,35 +22,54 @@ var isInGame bool
 const matchmakingTimeoutSeconds = 15
 
 func main() {
-	// Adiciona a flag -bot para o modo automatizado
+	// --- NOVAS FLAGS PARA O MODO MULTI-BOT ---
 	botMode := flag.Bool("bot", false, "Executa o cliente em modo automatizado (bot).")
+	botCount := flag.Int("count", 1, "Número de bots a serem executados em paralelo.")
+	botPrefix := flag.String("prefix", "Jogador", "Prefixo para o nome dos bots.")
+
 	flag.Parse() // Processa as flags
 
-	// Verifica os argumentos restantes (nome e ip)
 	args := flag.Args()
-	if len(args) < 2 {
-		log.Fatal("Uso: ./client [-bot] <nome_do_jogador> <ip_do_servidor>")
+	// O argumento de nome do jogador é agora opcional se estiver em modo bot
+	if len(args) < 1 {
+		log.Fatal("Uso: ./client [-bot] [-count N] [-prefix P] <ip_do_servidor> [nome_do_jogador_manual]")
 	}
-	playerName := args[0]
-	serverIP := args[1]
+	serverIP := args[0]
 
-	serverTcpAddr := fmt.Sprintf("%s:8080", serverIP)
-	serverUdpAddr := fmt.Sprintf("%s:8081", serverIP)
-
-	go sendUdpData(playerName, serverUdpAddr)
-
-	// Se o modo bot estiver ativo, executa a lógica do bot. Senão, o modo interativo.
 	if *botMode {
-		runBot(playerName, serverTcpAddr)
+		var wg sync.WaitGroup
+		for i := 1; i <= *botCount; i++ {
+			wg.Add(1)
+			playerName := fmt.Sprintf("%s%d", *botPrefix, i)
+			serverTcpAddr := fmt.Sprintf("%s:8080", serverIP)
+			serverUdpAddr := fmt.Sprintf("%s:8081", serverIP)
+			// Adiciona um pequeno atraso para não sobrecarregar o servidor com conexões instantâneas
+			time.Sleep(10 * time.Millisecond)
+			go func() {
+				defer wg.Done()
+				runBot(playerName, serverTcpAddr, serverUdpAddr)
+			}()
+		}
+		wg.Wait() // Espera todos os bots terminarem
+		log.Printf("Todos os %d bots terminaram a execução.", *botCount)
 	} else {
+		// Modo interativo original
+		if len(args) < 2 {
+			log.Fatal("Uso para modo interativo: ./client <ip_do_servidor> <nome_do_jogador>")
+		}
+		playerName := args[1]
+		serverTcpAddr := fmt.Sprintf("%s:8080", serverIP)
+		serverUdpAddr := fmt.Sprintf("%s:8081", serverIP)
+		go sendUdpData(playerName, serverUdpAddr)
 		handleServerConnection(playerName, serverTcpAddr)
 	}
-
-	// Removido o log de encerramento para não poluir a saída do bot
 }
 
-// NOVA FUNÇÃO: runBot contém a lógica para o cliente automatizado
-func runBot(playerName string, serverTcpAddr string) {
+// Assinatura da função modificada para receber o endereço UDP
+func runBot(playerName string, serverTcpAddr string, serverUdpAddr string) {
+	// Inicia o envio de pacotes UDP para este bot específico
+	go sendUdpData(playerName, serverUdpAddr)
+
 	conn, err := net.Dial("tcp", serverTcpAddr)
 	if err != nil {
 		log.Printf("[Bot %s]: Não foi possível conectar ao servidor: %v", playerName, err)
@@ -59,7 +78,14 @@ func runBot(playerName string, serverTcpAddr string) {
 	defer conn.Close()
 
 	fmt.Fprintf(conn, "%s\n", playerName)
-	log.Printf("[Bot %s]: Conectado com sucesso! Procurando partida...", playerName)
+
+	log.Printf("[Bot %s]: Conectado com sucesso! Abrindo 2 pacotes...", playerName)
+	for i := 0; i < 2; i++ {
+		fmt.Fprintf(conn, "OPEN_PACK\n")
+		time.Sleep(100 * time.Millisecond)
+	}
+
+	log.Printf("[Bot %s]: Procurando partida...", playerName)
 	fmt.Fprintf(conn, "FIND_MATCH\n")
 
 	reader := bufio.NewReader(conn)
@@ -69,19 +95,19 @@ func runBot(playerName string, serverTcpAddr string) {
 			if err != io.EOF {
 				log.Printf("[Bot %s]: Erro de conexão: %v", playerName, err)
 			}
-			break // Sai do loop se a conexão for fechada ou houver erro
+			break
 		}
 
 		message = strings.TrimSpace(message)
-		log.Printf("[Bot %s] Recebeu: %s", playerName, message)
+		// Removido o log de cada mensagem para não poluir o console com 1000 bots
+		// log.Printf("[Bot %s] Recebeu: %s", playerName, message)
 
 		if strings.HasPrefix(message, "MATCH_START|") {
-			log.Printf("[Bot %s]: Partida iniciada! Jogando a primeira carta.", playerName)
-			// O bot sempre joga a primeira carta (opção "1")
+			log.Printf("[Bot %s]: Partida iniciada! Jogando...", playerName)
 			fmt.Fprintf(conn, "1\n")
 		} else if strings.HasPrefix(message, "RESULT|") {
 			log.Printf("[Bot %s]: Partida finalizada.", playerName)
-			break // Encerra o bot após o fim da partida
+			break
 		} else if message == "NO_MATCH_FOUND" {
 			log.Printf("[Bot %s]: Nenhum oponente encontrado. Encerrando.", playerName)
 			break
@@ -90,7 +116,8 @@ func runBot(playerName string, serverTcpAddr string) {
 	log.Printf("[Bot %s]: Desconectando.", playerName)
 }
 
-// Restante do código (modo interativo) permanece quase o mesmo
+// O restante do arquivo (handleServerConnection, etc.) permanece o mesmo...
+
 func handleServerConnection(playerName string, serverTcpAddr string) {
 	var conn net.Conn
 	var err error
@@ -258,7 +285,7 @@ func runSearchCountdown(seconds int) {
 		stateMutex.Lock()
 		if !isSearching {
 			stateMutex.Unlock()
-			fmt.Printf("\r%s\r", strings.Repeat(" ", 50)) // Limpa a linha
+			fmt.Printf("\r%s\r", strings.Repeat(" ", 50))
 			return
 		}
 		stateMutex.Unlock()
