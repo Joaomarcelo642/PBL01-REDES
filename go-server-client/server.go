@@ -6,9 +6,13 @@ import (
 	"log"
 	"math/rand"
 	"net"
+	"os"        // Adicionar
+	"os/signal" // Adicionar
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic" // Adicionar
+	"syscall"     // Adicionar
 	"time"
 )
 
@@ -47,6 +51,10 @@ var (
 	players          = make(map[net.Conn]*Player)
 	stockMutex       = &sync.Mutex{}
 	playerMutex      = &sync.Mutex{}
+
+	totalConnections   int64
+	totalPacksOpened   int64
+	totalMatchesPlayed int64
 )
 
 func main() {
@@ -55,8 +63,18 @@ func main() {
 	go matchmaker()
 	go startUdpServer()
 
-	fmt.Println("Servidor iniciado. Aguardando clientes...")
-	select {}
+	fmt.Println("Servidor iniciado. Pressione Ctrl+C para encerrar e ver as estatísticas.")
+
+	// BLOCO ADICIONADO PARA CAPTURAR SINAL E EXIBIR STATS
+	quitChannel := make(chan os.Signal, 1)
+	signal.Notify(quitChannel, syscall.SIGINT, syscall.SIGTERM)
+	<-quitChannel
+
+	fmt.Println("\n--- ESTATÍSTICAS DO TESTE DE ESTRESSE ---")
+	fmt.Printf("Total de conexões TCP estabelecidas: %d\n", atomic.LoadInt64(&totalConnections))
+	fmt.Printf("Total de pacotes de cartas abertos: %d\n", atomic.LoadInt64(&totalPacksOpened))
+	fmt.Printf("Total de partidas 1v1 realizadas: %d\n", atomic.LoadInt64(&totalMatchesPlayed))
+	fmt.Println("-------------------------------------------")
 }
 
 // --- Funções de Inicialização ---
@@ -127,6 +145,7 @@ func startTcpServer() {
 }
 
 func handlePlayerConnection(conn net.Conn) {
+	atomic.AddInt64(&totalConnections, 1)
 	playerMutex.Lock()
 	player, playerExists := players[conn]
 	playerMutex.Unlock()
@@ -166,6 +185,33 @@ func handlePlayerConnection(conn net.Conn) {
 
 		switch command {
 		case "FIND_MATCH":
+			// --- INÍCIO DA CORREÇÃO DEFINITIVA ---
+			// Antes de entrar na fila, drena o buffer de rede para processar comandos
+			// que possam ter chegado na mesma rajada do cliente.
+			for {
+				// Define um timeout de leitura muito curto (ex: 20 milissegundos).
+				// Se não houver nada no buffer, a leitura falhará quase instantaneamente.
+				player.Conn.SetReadDeadline(time.Now().Add(20 * time.Millisecond))
+				message, err := reader.ReadString('\n')
+
+				// Independentemente do resultado, limpa o timeout para futuras leituras normais.
+				player.Conn.SetReadDeadline(time.Time{})
+
+				if err != nil {
+					// O erro é esperado (timeout), significa que o buffer está vazio.
+					break
+				}
+
+				// Se conseguimos ler algo, processa o comando extra.
+				extraCommand := strings.TrimSpace(message)
+				if extraCommand == "OPEN_PACK" {
+					log.Printf("Processando 'OPEN_PACK' em buffer para %s", player.Name)
+					openCardPack(player, false)
+				}
+			}
+			// --- FIM DA CORREÇÃO ---
+
+			// Agora que o buffer está limpo, é seguro entrar na fila e encerrar o loop.
 			matchmakingQueue <- player
 			return
 		case "OPEN_PACK":
@@ -192,6 +238,7 @@ func openCardPack(player *Player, isMandatory bool) {
 		cardPacks = cardPacks[1:]
 		player.Deck = append(player.Deck, pack...)
 		player.PacksOpened++
+		atomic.AddInt64(&totalPacksOpened, 1)
 
 		var response string
 		if isMandatory {
@@ -264,6 +311,8 @@ func matchmaker() {
 }
 
 func handleGameSession(player1 *Player, player2 *Player) {
+	atomic.AddInt64(&totalMatchesPlayed, 1)
+
 	defer func() {
 		go handlePlayerConnection(player1.Conn)
 		go handlePlayerConnection(player2.Conn)

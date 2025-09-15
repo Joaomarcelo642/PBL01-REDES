@@ -65,7 +65,6 @@ func main() {
 	}
 }
 
-// Assinatura da função modificada para receber o endereço UDP
 func runBot(playerName string, serverTcpAddr string, serverUdpAddr string) {
 	// Inicia o envio de pacotes UDP para este bot específico
 	go sendUdpData(playerName, serverUdpAddr)
@@ -79,16 +78,39 @@ func runBot(playerName string, serverTcpAddr string, serverUdpAddr string) {
 
 	fmt.Fprintf(conn, "%s\n", playerName)
 
-	log.Printf("[Bot %s]: Conectado com sucesso! Abrindo 2 pacotes...", playerName)
+	// --- INÍCIO DA CORREÇÃO ---
+	// Cria o leitor de respostas do servidor mais cedo.
+	reader := bufio.NewReader(conn)
+
+	// 1. Espera a resposta do pacote inicial obrigatório que o servidor envia na conexão.
+	_, errReadInitial := reader.ReadString('\n')
+	if errReadInitial != nil {
+		if errReadInitial != io.EOF {
+			log.Printf("[Bot %s]: Erro ao receber pacote inicial: %v", playerName, errReadInitial)
+		}
+		return
+	}
+	log.Printf("[Bot %s]: Pacote inicial recebido.", playerName)
+
+	// 2. Abre os 2 pacotes de forma síncrona, esperando a resposta de cada um.
+	log.Printf("[Bot %s]: Abrindo 2 pacotes extras...", playerName)
 	for i := 0; i < 2; i++ {
 		fmt.Fprintf(conn, "OPEN_PACK\n")
-		time.Sleep(100 * time.Millisecond)
+		_, errReadPack := reader.ReadString('\n') // Espera a confirmação do servidor.
+		if errReadPack != nil {
+			if errReadPack != io.EOF {
+				log.Printf("[Bot %s]: Erro ao abrir pacote %d: %v", playerName, i+1, errReadPack)
+			}
+			break // Para de tentar se houver um erro.
+		}
+		log.Printf("[Bot %s]: Pacote extra %d aberto.", playerName, i+1)
 	}
+	// --- FIM DA CORREÇÃO ---
 
 	log.Printf("[Bot %s]: Procurando partida...", playerName)
 	fmt.Fprintf(conn, "FIND_MATCH\n")
 
-	reader := bufio.NewReader(conn)
+	// O loop de leitura para a lógica do jogo continua aqui.
 	for {
 		message, err := reader.ReadString('\n')
 		if err != nil {
@@ -99,8 +121,6 @@ func runBot(playerName string, serverTcpAddr string, serverUdpAddr string) {
 		}
 
 		message = strings.TrimSpace(message)
-		// Removido o log de cada mensagem para não poluir o console com 1000 bots
-		// log.Printf("[Bot %s] Recebeu: %s", playerName, message)
 
 		if strings.HasPrefix(message, "MATCH_START|") {
 			log.Printf("[Bot %s]: Partida iniciada! Jogando...", playerName)
@@ -115,8 +135,6 @@ func runBot(playerName string, serverTcpAddr string, serverUdpAddr string) {
 	}
 	log.Printf("[Bot %s]: Desconectando.", playerName)
 }
-
-// O restante do arquivo (handleServerConnection, etc.) permanece o mesmo...
 
 func handleServerConnection(playerName string, serverTcpAddr string) {
 	var conn net.Conn
