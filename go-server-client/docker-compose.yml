@@ -1,149 +1,27 @@
-version: '3.8'
-
+# A tag 'version' foi removida por ser obsoleta
 services:
   server:
     build:
       context: .
       dockerfile: Dockerfile.server
     ports:
-      - "8080:8080" # Porta TCP
-      - "8081:8081/udp" # Porta UDP
+      - "8080:8080"
+      - "8081:8081/udp"
     networks:
       - app-network
+    restart: unless-stopped
 
-  player1:
+  bots:
     build:
       context: .
       dockerfile: Dockerfile.client
     depends_on:
       - server
-    command: ["./client", "Jogador1", "server"]
+    # O comando agora inicia 1000 bots em um único contêiner
+    command: ["./client", "-bot", "-count=10", "-prefix=Bot", "server"]
     networks:
       - app-network
-    stdin_open: true # Mantenha a entrada padrão aberta
-    tty: true
-
-  player2:
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    depends_on:
-      - server
-    command: ["./client", "Jogador2", "server"]
-    networks:
-      - app-network
-    stdin_open: true # Mantenha a entrada padrão aberta
-    tty: true
-
-  # player3:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.client
-  #   depends_on:
-  #     - server
-  #   command: ["./client", "Jogador3", "server"]
-  #   networks:
-  #     - app-network
-
-  # player4:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.client
-  #   depends_on:
-  #     - server
-  #   command: ["./client", "Jogador4", "server"]
-  #   networks:
-  #     - app-network
-
-  # player5:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.client
-  #   depends_on:
-  #     - server
-  #   command: ["./client", "Jogador5", "server"]
-  #   networks:
-  #     - app-network
-
-  # player6:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.client
-  #   depends_on:
-  #     - server
-  #   command: ["./client", "Jogador6", "server"]
-  #   networks:
-  #     - app-network
-
-  # player7:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.client
-  #   depends_on:
-  #     - server
-  #   command: ["./client", "Jogador7", "server"]
-  #   networks:
-  #     - app-network
-
-  # player8:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.client
-  #   depends_on:
-  #     - server
-  #   command: ["./client", "Jogador8", "server"]
-  #   networks:
-  #     - app-network
-
-  # player9:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.client
-  #   depends_on:
-  #     - server
-  #   command: ["./client", "Jogador9", "server"]
-  #   networks:
-  #     - app-network
-
-  # player10:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.client
-  #   depends_on:
-  #     - server
-  #   command: ["./client", "Jogador10", "server"]
-  #   networks:
-  #     - app-network
-
-  # player11:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.client
-  #   depends_on:
-  #     - server
-  #   command: ["./client", "Jogador11", "server"]
-  #   networks:
-  #     - app-network
-
-  # player12:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.client
-  #   depends_on:
-  #     - server
-  #   command: ["./client", "Jogador12", "server"]
-  #   networks:
-  #     - app-network
-
-  # player13:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.client
-  #   depends_on:
-  #     - server
-  #   command: ["./client", "Jogador13", "server"]
-  #   networks:
-  #     - app-network
+    restart: on-failure
 
 networks:
   app-network:
