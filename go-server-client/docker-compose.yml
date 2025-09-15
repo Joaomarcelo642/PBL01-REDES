@@ -1,9 +1,9 @@
-# A tag 'version' foi removida por ser obsoleta
 services:
   server:
     build:
       context: .
       dockerfile: Dockerfile.server
+    init: true
     ports:
       - "8080:8080"
       - "8081:8081/udp"
@@ -18,7 +18,7 @@ services:
     depends_on:
       - server
     # O comando agora inicia 1000 bots em um único contêiner
-    command: ["./client", "-bot", "-count=10", "-prefix=Bot", "server"]
+    command: ["./client", "-bot", "-count=1000", "-prefix=Bot", "server"]
     networks:
       - app-network
     restart: on-failure
