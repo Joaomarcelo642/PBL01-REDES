@@ -17,7 +17,6 @@ services:
       dockerfile: Dockerfile.client
     depends_on:
       - server
-    # O comando agora inicia 1000 bots em um único contêiner
     command: ["./client", "-bot", "-count=1000", "-prefix=Bot", "server"]
     networks:
       - app-network
