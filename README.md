@@ -23,6 +23,11 @@ Para executar o projeto, você precisa ter o **Docker** e o **Docker Compose** i
 
 Este modo simula **1000 bots** se conectando ao servidor, abrindo pacotes de cartas e procurando partidas simultaneamente. É ideal para verificar a performance e a estabilidade do servidor sob carga.
 
+O número de bots pode ser alterado no arquivo `docker-compose.yml`, modificando o parâmetro `-count=`. Contudo o número máximo de players é controlado pelo número de cartas dísponiveis no jogo, então para aumentar a quantidade de bots também é necessário manipular a quantidade de cartas.
+```bash
+command: ["./client", "-bot", "-count=1000", "-prefix=Bot", "server"]
+```
+
 1.  **Construir e iniciar os contêineres:**
     Este comando irá construir as imagens do servidor e do cliente e iniciar os serviços em segundo plano (`-d`).
     ```bash
